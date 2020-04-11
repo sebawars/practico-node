@@ -1,0 +1,280 @@
+app es una instancia de express
+
+const app = express();
+
+Para decirle qué router usar al atender un endpoint usamos use.
+
+app.use('/', callback); Aca en callback pasamos un router de express.
+
+app.listen(port, callback)
+
+el user que es router de express:
+
+En el router de express tenes funciones acordes a los metodos get, post etc y les pasas callbacks para responder a esos endpoints.
+
+Las capaz networks mappean endpoints con router de express.
+
+En los routers llamas a los controladores.
+
+En el index de usar decidimos qué store usar para que sea mock, produccion etc.
+
+En index.js de user importas store y controller. Exportas instancia de ese controller que ya tiene el store que elegiste inyectado:
+
+	module.exports = ctrl(store);
+	
+En controller exportas funciones que van a apuntar al store que pases inyectado por parametro.
+
+	Si no te viene store por parametro metes uno dummy por default.
+	
+
+Funciones async que devuelven algun valor pero no explicitamente en una promesa, devuelve una promesa automaticamente resuelta con valor de resolve del return.
+
+body-parser nos permite trabajar facil con body de request.
+
+Haces que la app lo use: app.use(bodyParser.json());
+
+nanoid para generar ids.
+
+Agrego sugar js o lodash js para generar facilmente efecto de lado sobre array como un simple remove.
+
+Swagger para documentar la api.
+
+Con http://editor.swagger.io/ podes ir preparando lo que documentas en tu api.
+
+Podes descargar archivo json de la config.
+
+En http://localhost:3000/api-docs/ vas a ver lo mismo que estaba en swagger.
+
+JWT
+
+	El texto resultante cifrado tiene tres partes:
+	
+	HEADER: algoritmo y tipo.
+	PAYLOAD: data + data adicional (issuedAt, expiración, sub: identificador único de a quién está asociado)
+	VERIFY SIGNATURE: Cifrado de (cifrado de header, cifrado de payload, secret)
+		El secret no deberia estar en el codigo ni viajar al front end.
+		
+	Anatomía de un JWT
+	JWT es un estándar de la industria que nos permite manejar demandas de información entre dos clientes.
+	.
+	Un JSON Web Token es un estandar que nos permite generar demandas entre 2 clientes de manera segura.
+	Un JWT está encriptado, pero tiene 3 partes principales divididas por “.” (punto)
+
+	Header: Contiene los archivos de configuración (el tipo y el algoritmo de encriptación)
+	Payload: Guarda la información de nuestros usuarios
+	Signature: es la firma que contiene el header códificado más el payload códificado, para poder dar acceso a un contenido, éste deberá de ser firmado con un secret, que es la clave secreta con la que se firman los tokens, misma que sólo la deberá de conocer el backend.
+	Dentro del payload tenemos información que puede ser relevante para la autorización tal como:
+
+	La expiración
+	Id’s
+	Nombres
+	etc
+	.
+	Es importante saber que los JWT acabarán firmando mucha parte de la comunicación, por lo que no es recomendable que mucha información viaje, ésto puede acabar alentando tu aplicación.
+	
+En la base de datos separamos la entidad de usuario de la de password para que no mostremos por error ese dato. Solo sea accedido de forma privada.
+
+Creamos componente auth que guarda la clave de un usuario para mayor seguridad.
+
+Cuando el controller de usuario detecta que en el body viene username o password, llama al controller del auth para hacer el upsert tambien.
+
+En empresas grandes muchas veces se delega la autorización de login a algun servicio de google o algo asi.
+
+Importamos libreria jsonwebtoken para cifrar y obtener token.
+
+Usamos bcrypt para encriptar las password
+
+Especificamos cuantas veces queremos que haga cifrado. Recomendable entre 5 y 10
+
+await bcrypt.hash(data.password, 5)
+
+Al hacer varias veces hash de la misma pass genera cifrados diferentes.
+
+bcrypt.compare(password, data.password)
+
+Para la autorización no vamos a dejar llegar a la logica del componente si no tiene permisos.
+
+El token viaja en el campo authorization de los headers.
+
+En los headers va: Authorization: Bearer <token>
+
+Del Bearer del texto del token sacamos el user, o sea portador.
+
+Elegimos en auth un authorization Bearer para el token
+
+En express podes poner middlewares a nivel app o router.
+
+Son funciones que reciben req, res y next, siendo next el siguiente middleware a ejecutar.
+	
+MYSQL
+
+	Usamos host gratis para la base
+	https://remotemysql.com/
+	
+	Vamos a phpmyadmin en la base de datos.
+	
+Microservicios
+
+	Empezamos con algo facil todo en uno.
+	
+	Vamos identificando y separando a medida que crecen dependencias y complejidad.
+	
+	No construyas un rascacielos sin saber construir una casa.
+	
+	Se presentan nuevos problemas de conexión, sincronización etc.
+	
+	Pasamos la bd a un microservicio
+	
+Vamos a conectar la app al servicio de bd.
+
+instalamos request para faciilitar requests.
+
+
+A nivel proyecto:
+
+	/utils/errors.js		Devuelve un objeto Error con statusCode y mensajes recibidos por parametro.
+	/api/components
+	/api/index.js			Usa app. Mapea e invoca routers user y auth. Mapea docs y encastra middlewares de swagger.
+	/network/response.js
+	/network/errors.js		Middleware para capturar errores en cadena de llamados de app. No hacemos nada con next porque va a estar al final de la cadena.
+							Lo ponemos al final de todos los use en api.
+	/store
+	/auth
+	
+	En auth tenemos utilidades para:
+		- cifrar mensajes con jwt
+		- extraer el token del mensaje con Bearer
+		- extraer el user del cuerpo del token
+		- verificar si el id del cuerpo del token es igual al id del cuerpo de la request.
+		- verificar si el token fue cifrado con nuestro secret
+		
+	En components tenemos:
+	
+	/store 
+		dummy.js			maneja base de prueba en memoria.
+		mysql.js			conecta a mysql. Hace de controller y store para el network de la carpeta mysql (de abajo)
+		remote.js			hace de controller para requests remotas HTTP al servicio de la base. 
+		remote-mysql.js		exporta instancia de base remota con host y port obtenido por config. Se utiliza en index de user, post etc.
+							cada uno define si quiere base local, remota o dummy
+	
+	/mysql
+		index.js			usa express y el router de network. Este va a ser el servicio que escucha en puerto diferente al de app.
+		network.js			mapea endpoints dinamicas con variable :tabla para acceder a /user, /post etc. 
+							Usa de controller y store a /store/mysql.js
+	
+	/auth					para el login
+		network.js			mapeamos login, devolvemos el token en cuerpo de respuesta.
+		controller.js		LOGIN verifica usuario en store. Compara pass con bcrypt. Devuelve token obtenido con cifrado del auth global.
+							UPSERT que se invoca por controller de user para guardar pass encriptada con bcrypt en entidad separada por seguridad.
+		index.js			exporta controller con store seleccionado inyectado. Aca definis si va a ser remoto, local o dummy.
+						
+	/user
+		secure.js			expone middleware de autorización como primer paso al ejecutar un endpoint que require auth.
+		network.js 			mapea endpoints 
+		controller.js		responde para network. El upsert usa el upsert del controller de auth para crear/actualizar la entidad de seguridad (password)
+		index.js			exporta controller con store seleccionado inyectado. Aca definis si va a ser remoto, local o dummy.
+		
+	En los network llamamos a next en los catch de promesas asi se delega al ultimo middleware de errores.
+	
+		Con un simple .catch(next);
+		
+	La función middleware de errores siempre recibe como primer parametro el err.
+	
+	Con esta firma, express ya sabe que tiene que depositar ahí el error que haya surgido.
+	
+	Al pasar la base a un servicio tenes que exponer las tablas por http y dar forma estandar de consultar esos datos a los demas servicios.
+	
+	Vamos a ir pasando todo el componente de post a un microservicio con su base independiente.
+	
+	Ahora teemos
+	
+	1- api
+	2- posts
+	3- bd mysql
+	
+	Con PM2 podes lanzar servicios, monitorearlos, decirles que hagan autorestart, ver logs etc.
+	
+	npm i -g pm2
+	
+	pm2 start index.js te lanza un proceso con la api.
+	
+	pm2 start index-mysql.js
+	
+	pm2 start index-post.js
+	
+	pm2 status te muestra cuadro con procesos, nro de restarts, status, cpu, memory.
+	
+	pm2 logs te muestra todos los logs.
+	
+	pm2 logs 0 te muestra los archivos de logs del pid 0.
+	
+	Hay una segunda forma de desplegar sin server.
+	
+	Piezas de codigo que se ejecutan en la nube sin tener que configurar.
+	
+	Esa configuración se automatica. Consta de levantar server, configurar server, donde estan los microservicios, como funcionan.
+	
+	Es una cadena de procesos. Tenes que ver cuál queres dejar privado.
+	
+	Zeit Now
+	
+	Plataforma severles que abstrae de todo lo que hay por debajo.
+	
+	Corre sobre AWS. 
+	
+	Levanta tus servicios como lambdas, se ejecutan hacen lo que tienen que hacer y mueren.
+
+	No guardamos sesiones, nada de info relacionada al tiempo en el backendo.
+	
+	Integrado a github, ssl, se usa en prod.
+	
+	Te podes loguear con github.
+	
+	npm i -g now.
+	
+	Para desplegar: now
+	
+	Crea proyecto, hace build.
+	
+	Te genera url automatica.
+	
+	En el link_logs vemos mas detalles de status. Realtime, build etc.
+	
+	En archivo now.json explicamos toda la arquitectura y cómo queremos que se despliegue.
+	
+	En build pones todos los src de index a buildear y que use node.
+	
+	En routes pones que redirecciones cosas como /api/post(.*) a /api/index.post.js
+	
+	Desplegamos de forma horizontal. No exponemos la base de datos 
+	
+	El microservicio de posts se conecta directo a la base mysql de cloud.
+	
+	En el now.json podes poner variables de entonro.
+	
+	now dev te despliega en localhost.
+
+	Solo trabaja balanceando servicios de diferentes puertos.
+	
+	Al parecer solo acepta redireccionar todo los microservicios a un solo puerto.
+	
+	El server de la base que lo tengo levantado en 3001 me obliga a redireccionarlo al 3000.
+	
+Redis
+
+	Hacemos microservicio de base de datos en memoria con Redis.
+	
+	Lo normal es que se autodefina el tiempo de borrado de cache.
+	
+	Usamos host redisLabs de prueba.
+	
+	Es clave valor.
+	
+Subimos los microservicios a google cloud compute engine en una vm.
+
+En la conexión SSH:
+
+	curl -sL https://deb.nodesource.com/setup_12.x -o nodesource_sertup.sh
+	
+	sudo apt-get install git
+	
