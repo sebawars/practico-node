@@ -8,6 +8,7 @@ const router = express.Router();
 router.get('/:table', list);
 router.get('/:table/:id', get);
 router.put('/:table', upsert);
+router.post('/:table', upsert);
 
 async function list(req, res, next) {
     const datos = await Store.list(req.params.table)

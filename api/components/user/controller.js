@@ -10,22 +10,21 @@ module.exports = function (injectedStore, injectedCache) {
         store = require('../../../store/dummy');
     }
     if (!cache) {
-        cache = require('../../../cache/dummy');
+        cache = require('../../../store/dummy');
     }
 
     async function list() {
         let users = await cache.list(TABLA);
 
-        if(!users){
-            console.log('No estaba en cache. Buscando en DB');
+        if (!users) {
+            console.log('No estaba en caché. Buscado en DB')
             users = await store.list(TABLA);
             cache.upsert(TABLA, users);
-        }else{
+        } else {
             console.log('Nos traemos datos de cache');
         }
-
+        
         return users;
-
     }
 
     function get(id) {

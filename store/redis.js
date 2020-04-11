@@ -10,9 +10,10 @@ const client = redis.createClient({
 
 function list(table) {
     return new Promise((resolve, reject) => {
+        
         client.get(table, (err, data) => {
             if (err) return reject(err);
-
+            
             let res = data || null;
             if (data) {
                 res = JSON.parse(data);

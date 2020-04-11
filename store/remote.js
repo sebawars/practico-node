@@ -54,7 +54,7 @@ function createRemoteDB(host, port) {
                     console.error('Error con la base de datos remota', err);
                     return reject(err.message);
                 }
-
+                console.log(body);
                 const resp = JSON.parse(body);
                 return resolve(resp.body);
             })
@@ -63,6 +63,7 @@ function createRemoteDB(host, port) {
 
     return {
         list,
+        upsert
     }
 }
 
