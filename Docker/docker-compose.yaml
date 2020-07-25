@@ -12,4 +12,4 @@ services:
         - ./db-mount:/var/lib/mysql
         - ./db-dump/dump.sql:/data/application/init.sql
     ports:
-      - 3306:3005
+      - 3005:3306

@@ -17,6 +17,12 @@ CREATE TABLE auth(
     password VARCHAR(64)
 );
 
-CREATE USER 'ec2-user'@'localhost' IDENTIFIED BY '9un9x2szLp';
+CREATE USER 'ec2-user'@'localhost' IDENTIFIED BY 'password';
 
-GRANT ALL ON oqofkk3Wd9.* TO 'ec2-user'@'localhost';
+GRANT ALL PRIVILEGES ON *.* TO 'ec2-user'@'localhost' WITH GRANT OPTION;
+
+CREATE USER 'ec2-user'@'%' IDENTIFIED BY 'password';
+
+GRANT ALL PRIVILEGES ON *.* TO 'ec2-user'@'%' WITH GRANT OPTION;
+
+FLUSH PRIVILEGES;
