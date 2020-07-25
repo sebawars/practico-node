@@ -12,7 +12,7 @@ module.exports = {
     },
     mysql: {
         host: process.env.MYSQL_HOST || 'localhost',
-        user: process.env.MYSQL_USER || 'ec2-user',
+        user: process.env.MYSQL_USER || 'root',
         password: process.env.MYSQL_PASS || '9un9x2szLp',
         database: process.env.MYSQL_DB || 'oqofkk3Wd9',
     },
