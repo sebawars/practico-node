@@ -1,3 +1,7 @@
+CREATE DATABASE telegram;
+
+use telegram;
+
 CREATE TABLE user(
     id VARCHAR(32),
     username VARCHAR(32),

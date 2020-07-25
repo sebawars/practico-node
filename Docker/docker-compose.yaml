@@ -4,11 +4,12 @@ services:
 
   mysql:
     image: mysql:8.0.13
-    command: --init-file /db-dump/dump.sql
     environment:
       MYSQL_DATABASE: telegram
       MYSQL_ROOT_PASSWORD: root
+    command: --init-file /data/application/init.sql
     volumes:
-      - ./db-mount:/var/lib/mysql
+        - ./db-mount:/var/lib/mysql
+        - ./db-dump/dump.sql:/data/application/init.sql
     ports:
       - 3306:3005
