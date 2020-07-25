@@ -1,16 +1,16 @@
 {
     "version": 2,
     "env": {
-        "MYSQL_HOST": "remotemysql.com",
+        "MYSQL_HOST": "localhost",
         "REMOTE_DB": "true",
-        "API_PORT": "3000",
-        "POST_PORT": "3002",
+        "API_PORT": "3004",
+        "POST_PORT": "3006",
         "JWT_SECRET": "notasecret!",
         "MYSQL_USER": "oqofkk3Wd9",
         "MYSQL_PASS": "9un9x2szLp",
         "MYSQL_DB": "oqofkk3Wd9",
         "MYSQL_SRV_HOST": "localhost",
-        "MYSQL_SRV_PORT": "3001"
+        "MYSQL_SRV_PORT": "3005"
     },
     "builds": [
         {

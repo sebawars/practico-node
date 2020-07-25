@@ -1,0 +1,22 @@
+docker run -p 3306:3005 --name telegramMysql -e MYSQL_ROOT_PASSWORD="9un9x2szLp" -d mysql:5.7
+
+docker exec -it telegramMysql mysql -uroot -p
+
+create database oqofkk3Wd9;
+
+use oqofkk3Wd9;
+
+CREATE TABLE user(
+    id VARCHAR(32),
+    username VARCHAR(32),
+    name VARCHAR(64)
+);
+
+INSERT INTO `user`(`id`,`username`,`name`)
+VALUES ('123','cristian','cristian');
+
+CREATE TABLE auth(
+    id VARCHAR(32),
+    username VARCHAR(32),
+    password VARCHAR(64)
+);
