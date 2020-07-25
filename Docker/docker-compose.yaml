@@ -9,6 +9,6 @@ services:
       MYSQL_DATABASE: telegram
       MYSQL_ROOT_PASSWORD: root
     volumes:
-      - ./db-dump:/var/lib/mysql
+      - ./db-mount:/var/lib/mysql
     ports:
       - 3306:3005
