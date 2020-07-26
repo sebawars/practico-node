@@ -11,14 +11,14 @@ module.exports = {
         secret: process.env.JWT_SECRET || 'notasecret!',
     },
     mysql: {
-        host: process.env.MYSQL_HOST || 'localhost',
+        host: process.env.MYSQL_HOST || '127.0.0.1',
         host: process.env.MYSQL_PORT || 3005,
         user: process.env.MYSQL_USER || 'ec2-user',
-        password: process.env.MYSQL_PASS || '9un9x2szLp',
-        database: process.env.MYSQL_DB || 'oqofkk3Wd9',
+        password: process.env.MYSQL_PASS || 'ec2pass',
+        database: process.env.MYSQL_DB || 'telegram',
     },
     mysqlService: {
-        host: process.env.MYSQL_SRV_HOST || 'localhost',
+        host: process.env.MYSQL_SRV_HOST || '127.0.0.1',
         port: process.env.MYSQL_SRV_PORT || 3005,
     },
     cacheService: {
